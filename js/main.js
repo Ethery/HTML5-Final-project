@@ -91,18 +91,7 @@ window.onload = function() {
 
         // Create random entities
         for (var i=0; i<0; i++) {
-            var scale = randRange(50, 100);
-            var imageindex = i % images.length;
-            var xdir = 1 - 2 * randRange(0, 1);
-            var ydir = 1 - 2 * randRange(0, 1);
-            var entity = new Entity(images[imageindex], 0, 0, scale, scale, xdir, ydir, randRange(100, 400));
-
-            // Set a random position
-            entity.x = randRange(0, level.width-entity.width);
-            entity.y = randRange(0, level.height-entity.height);
-
-            // Add to the entities array
-            entities.push(entity);
+            createRandomEntity();
         }
 
         // Enter main loop
@@ -243,9 +232,8 @@ window.onload = function() {
         context.fillText("Fps: " + fps, 13, 50);
     }
 
-    // Mouse event handlers
-    function onMouseMove(e) {}
-    function onMouseDown(e) {
+    function createRandomEntity()
+    {
         console.log("penis");
         var scale = randRange(50, 100);
         var imageindex = randRange(0,4);
@@ -254,12 +242,17 @@ window.onload = function() {
         var entity = new Entity(images[imageindex], 0, 0, scale, scale, xdir, ydir, randRange(100, 400));
 
         // Set a random position
-        entity.x = getMousePos(canvas,e).x;
-        entity.y = getMousePos(canvas,e).y;
+        entity.x = randRange(0, level.width-entity.width);
+        entity.y = randRange(0, level.height-entity.height);
 
         // Add to the entities array
         entities.push(entity);
+    }
 
+    // Mouse event handlers
+    function onMouseMove(e) {}
+    function onMouseDown(e) {
+        createRandomEntity();
     }
     function onMouseUp(e) {}
     function onMouseOut(e) {}
