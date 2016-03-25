@@ -113,6 +113,8 @@ window.onload = function() {
 
     // Render the game
     function render() {
+        context.clearRect(level.x,level.y,level.width,level.height);
+
         for (var i=0; i<entities.length; i++) {
             for (var j=0; j<entities[i].length; j++) {
 
