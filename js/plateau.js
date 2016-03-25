@@ -131,14 +131,13 @@ var checkLignes = function(){
         {
             entities[i].unshift(createNullEntity(i,0));
             multiplicateur = Math.floor(score /1000);
-            console.log(score);
-            console.log(multiplicateur);
-            if(multiplicateur>0)
-            {
-                score += (10*multiplicateur);
-            }
-            else {
-                score += 10;
+            if(gamestarted == true) {
+                if (multiplicateur > 0) {
+                    score += (10 * multiplicateur);
+                }
+                else {
+                    score += 10;
+                }
             }
         }
     }
@@ -159,22 +158,10 @@ var refillPlateau=function()
 };
 
 var swapCases = function(ia,ja,ib,jb){
-    consolePlateau(-1,-1);
-    //console.log("swaped with : ("+ia+"-"+ja+")<->("+ib+"-"+jb+")");
-    //console.log("entities swaping : "+entities[ia][ja].index+"<->"+entities[ib][jb].index);
-
-    //console.log("tmp= "+entities[ia][ja].index);
+    //consolePlateau(-1,-1);
     var tmp = entities[ia][ja];
-    //console.log("tmp= "+entities[ia][ja].index);
-
-    //console.log(entities[ia][ja].index+"="+entities[ib][jb].index);
     entities[ia][ja] = entities[ib][jb];
-    //console.log(entities[ia][ja].index+"="+entities[ib][jb].index);
-
-    //console.log(entities[ib][jb].index+"="+tmp);
     entities[ib][jb] = tmp;
-    //console.log(entities[ib][jb].index+"="+tmp);
-    //console.log("entities swaped : "+entities[ia][ja].index+"<->"+entities[ib][jb].index);
 
     var tmp = entities[ia][ja].x;
     entities[ia][ja].x = entities[ib][jb].x;

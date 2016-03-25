@@ -31,7 +31,6 @@ window.onload = function() {
         context.clearRect(0, 0, canvas.width, canvas.height);
         render();
         // Enter main loop
-        console.log("/------------------INIT DONE----------------------/");
         if(checkLignes() == true) {
             refillPlateau();
         }
@@ -40,26 +39,29 @@ window.onload = function() {
 
     // Main loop
     function main(tframe) {
-        //if (i < 100) {
-            //console.log(i);
-            // Request animation frames
             window.requestAnimationFrame(main);
             render();
-            /*console.log(checkLignes());
-            if(checkLignes() == true) {
-                refillPlateau();
-            }*/
 
-            if(update(tframe) == false)
-            {
-                render();
-                if(checkLignes() == true) {
-                    refillPlateau();
-                }
+
+        if(gamestarted == false) {
+            if (checkLignes() == true) {
+                refillPlateau();
+            }
+            if (update(tframe) == false) {
+            }
+        }
+        else
+        {
+            if (checkLignes() == true) {
+                refillPlateau();
             }
             render();
-            i++;
-        //}
+            if (update(tframe) == false) {
+                render();
+            }
+        }
+        render();
+        i++;
     }
 
     // Update the game state
@@ -67,7 +69,6 @@ window.onload = function() {
         
         var dt = (tframe - lastframe) / 1000;
         lastframe = tframe;
-        var basedy = 0;
 
         // Update the fps counter
         updateFps(dt);
@@ -112,32 +113,25 @@ window.onload = function() {
 
     // Render the game
     function render() {
-        // Draw background and a border
-        context.fillStyle = "#d0d0d0";
-        context.fillRect(0, 0, canvas.width, canvas.height);
-        context.fillStyle = "#e8eaec";
-        context.fillRect(1, 1, canvas.width-2, canvas.height-2);
-
-        // Display fps
-        context.fillStyle = "#000";
-        context.font = "12px Verdana";
-        context.fillText("Fps: " + fps, 0, level.y-2);
-
         for (var i=0; i<entities.length; i++) {
             for (var j=0; j<entities[i].length; j++) {
 
                 // Draw the entity
                 var entity = entities[i][j];
                 context.drawImage(entity.image, entity.x, entity.y, entity.width, entity.height);
-                /*if(x == i && j == y)
-                {
-                    context.style = "#0000";
-                    context.rect(entity.x, entity.y, entity.width, entity.height);
-                    context.stroke();
-                }*/
+
             }
         }
-        //console.log(score);
+        if(coord1.x != -1) {
+
+            var degrade = context.createLinearGradient((x*(level.width / size))+level.x,(y*(level.height / size))+level.y, level.width / (size), level.height / (size)-50);
+
+            degrade.addColorStop(0,"#FFF");//Ajout d'une première couleur.
+            degrade.addColorStop(1,"#000");//Ajout de la seconde couleur.
+
+            context.fillStyle = degrade;//On passe notre dégradé au fillStyle();
+            context.fillRect((x*(level.width / size))+level.x,(y*(level.height / size))+level.y, level.width / (size), level.height / (size));
+        }
         $("#score").html("Score : "+score);
         $("#multiplicateur").html("Multiplicateur : "+multiplicateur);
     }
@@ -146,8 +140,9 @@ window.onload = function() {
 
     // Mouse event handlers
     function onMouseMove(e) {}
-    function onMouseDown(e) {
 
+    function onMouseDown(e) {
+        gamestarted = true;
         var clic = getMousePos(canvas,e);
         var canSwap = false;
         if(coord1.x != -1)
@@ -165,9 +160,7 @@ window.onload = function() {
                     canSwap = true;
                 }
             }
-            //console.log("Tested on : ("+x+"-"+y+")<->("+clic.x+"-"+clic.y+")");
         }
-        //console.log(x+","+y+":"+clic.x+","+clic.y);
         if(canSwap == true)
         {
             swapCases(x,y,clic.x,clic.y);
@@ -180,14 +173,11 @@ window.onload = function() {
             coord1 = getMousePos(canvas,e);
             x = Math.floor((coord1.x-level.x)/(level.width/size));
             y = Math.floor((coord1.y-level.y)/(level.width/size));
-            console.log(x+","+y);
-            //consolePlateau(x,y);
         }
         render();
     }
-    function onMouseUp(e) {
 
-    }
+    function onMouseUp(e) {}
     function onMouseOut(e) {}
 
     // Get the mouse position
