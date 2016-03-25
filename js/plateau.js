@@ -43,11 +43,16 @@ function loadImages(imagefiles) {
 //-----------GESTION PLATEAU------------------//
 // Images
 var images = [];
-images = loadImages(["img/plaine.png", "img/montagne.png", "img/ile.png","img/marais.png","img/foret.png"]);
+images = loadImages(["img/ile.png", "img/montagne.png", "img/marais.png","img/plaine.png","img/foret.png","img/blank.png"]);
+
 // Array of entities
 var entities = new Array();
+
 //Taille du quadrillage
-var size = 8;
+var size = 6;
+
+//Score;
+var score = 0;
 
 function createEntity(x,y)
 {
@@ -56,7 +61,19 @@ function createEntity(x,y)
     var imageindex = randRange(0,4);
     var xdir = 0;
     var ydir = 1;
-    var entity = new Entity(imageindex,images[imageindex], x, y, scalex, scaley, xdir, ydir, 600);
+    var entity = new Entity(imageindex,images[imageindex], x, y, scalex, scaley, xdir, ydir, 1200);
+
+    // Add to the entities array
+    return entity;
+}
+function createNullEntity(x,y)
+{
+    var scalex = level.width/(size);
+    var scaley = level.height/(size);
+    var imageindex = 5;
+    var xdir = 0;
+    var ydir = 1;
+    var entity = new Entity(imageindex,images[imageindex], x, y, scalex, scaley, xdir, ydir, 1200);
 
     // Add to the entities array
     return entity;
@@ -71,12 +88,19 @@ var loadPlateau = function(){
     }
 };
 
+var aVirerX = [];
+var aVirerY = [];
+
 var checkLignes = function(){
     var deleted = false;
     for (var i=0; i<entities.length-2; i++) {
         for (var j=0; j<entities[i].length; j++) {
-            if(entities[i][j].index == entities[i+1][j].index && entities[i][j].index == entities[i+2][j].index)
+            if(entities[i][j].index == entities[i+1][j].index && entities[i][j].index == entities[i+2][j].index && entities[i][j].index != 5)
             {
+                aVirerX.push(i);
+                aVirerX.push(i+1);
+                aVirerX.push(i+2);
+                aVirerY.push(j);
                 entities[i].splice(j, 1);
                 entities[i+1].splice(j, 1);
                 entities[i+2].splice(j, 1);
@@ -88,26 +112,85 @@ var checkLignes = function(){
 
     for (var i=0; i<entities.length; i++) {
         for (var j=0; j<entities[i].length-2; j++) {
-            if (entities[i][j].index == entities[i][j + 1].index && entities[i][j].index == entities[i][j + 2].index) {
+            if (entities[i][j].index == entities[i][j + 1].index && entities[i][j].index == entities[i][j + 2].index && entities[i][j].index != 5) {
                 entities[i].splice(j, 3);
+                aVirerX.push(i);
+                aVirerY.push(j);
+                aVirerY.push(j+1);
+                aVirerY.push(j+2);
                 deleted = true;
                 break;
             }
         }
     }
+
+    for (var i=0; i<entities.length; i++) {
+        while(entities[i].length != size)
+        {
+            entities[i].unshift(createNullEntity(i,0));
+            score += 10;
+        }
+    }
+
     return deleted;
 };
 
 var refillPlateau=function()
 {
     for (var i=0; i<entities.length; i++) {
-        while(entities[i].length != size)
-        {
-            entities[i].unshift(createEntity(i,0));
+        for (var j=0; j<entities[i].length; j++) {
+            if(entities[i][j].index == 5)
+            {
+                entities[i][j] = createEntity(i,(j-size+1)*2);
+            }
         }
     }
 };
 
-var swapCases = function(a,b){
+var swapCases = function(ia,ja,ib,jb){
+    consolePlateau(-1,-1);
+    //console.log("swaped with : ("+ia+"-"+ja+")<->("+ib+"-"+jb+")");
+    //console.log("entities swaping : "+entities[ia][ja].index+"<->"+entities[ib][jb].index);
 
+    //console.log("tmp= "+entities[ia][ja].index);
+    var tmp = entities[ia][ja];
+    //console.log("tmp= "+entities[ia][ja].index);
+
+    //console.log(entities[ia][ja].index+"="+entities[ib][jb].index);
+    entities[ia][ja] = entities[ib][jb];
+    //console.log(entities[ia][ja].index+"="+entities[ib][jb].index);
+
+    //console.log(entities[ib][jb].index+"="+tmp);
+    entities[ib][jb] = tmp;
+    //console.log(entities[ib][jb].index+"="+tmp);
+    console.log("entities swaped : "+entities[ia][ja].index+"<->"+entities[ib][jb].index);
+
+    var tmp = entities[ia][ja].x;
+    entities[ia][ja].x = entities[ib][jb].x;
+    entities[ib][jb].x = tmp;
+
+    var tmp = entities[ia][ja].y;
+    entities[ia][ja].y = entities[ib][jb].y;
+    entities[ib][jb].y = tmp;
+
+    consolePlateau(-1,-1);
+};
+
+var consolePlateau = function(x,y){
+    var str;
+    for (var i=0; i<entities.length; i++) {
+        str = "";
+        for (var j=0; j<entities[i].length; j++) {
+            if(x == i && y == j)
+            {
+                str += "|" + entities[i][j].index + "|;";
+            }
+            else
+            {
+                str += entities[i][j].index+";";
+            }
+        }
+        console.log (str);
+    }
+    console.log("-----------------------------------");
 };
