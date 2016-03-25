@@ -50,12 +50,13 @@ window.onload = function() {
                 refillPlateau();
             }*/
 
+            if(checkLignes() == true) {
+                refillPlateau();
+            }
+            render();
             if(update(tframe) == false)
             {
                 render();
-                if(checkLignes() == true) {
-                    refillPlateau();
-                }
             }
             render();
             i++;
@@ -123,19 +124,20 @@ window.onload = function() {
         context.font = "12px Verdana";
         context.fillText("Fps: " + fps, 0, level.y-2);
 
+
+
         for (var i=0; i<entities.length; i++) {
             for (var j=0; j<entities[i].length; j++) {
 
                 // Draw the entity
                 var entity = entities[i][j];
                 context.drawImage(entity.image, entity.x, entity.y, entity.width, entity.height);
-                /*if(x == i && j == y)
-                {
-                    context.style = "#0000";
-                    context.rect(entity.x, entity.y, entity.width, entity.height);
-                    context.stroke();
-                }*/
+
             }
+        }
+        if(coord1.x != -1) {
+            context.fillStyle = "#000";
+            context.arc((x*(level.width / size))+level.x,(y*(level.height / size))+level.y, level.width / (size), level.height / (size), Math.PI);
         }
         //console.log(score);
         $("#score").html("Score : "+score);
@@ -146,8 +148,8 @@ window.onload = function() {
 
     // Mouse event handlers
     function onMouseMove(e) {}
-    function onMouseDown(e) {
 
+    function onMouseDown(e) {
         var clic = getMousePos(canvas,e);
         var canSwap = false;
         if(coord1.x != -1)
@@ -180,14 +182,11 @@ window.onload = function() {
             coord1 = getMousePos(canvas,e);
             x = Math.floor((coord1.x-level.x)/(level.width/size));
             y = Math.floor((coord1.y-level.y)/(level.width/size));
-            console.log(x+","+y);
-            //consolePlateau(x,y);
         }
         render();
     }
-    function onMouseUp(e) {
 
-    }
+    function onMouseUp(e) {}
     function onMouseOut(e) {}
 
     // Get the mouse position
