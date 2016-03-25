@@ -17,9 +17,10 @@ var level = {
 };
 
 // Define an entity class
-var Entity = function(index,image, arrayPosx, arrayPosy, width, height, xdir, ydir, speed) {
+var Entity = function(index,image,selected_i, arrayPosx, arrayPosy, width, height, xdir, ydir, speed) {
     this.index = index;
     this.image = image;
+    this.selected_i = selected_i;
     this.x = arrayPosx*(level.width/size)+level.x;
     this.y = arrayPosy*(level.height/size)+level.y;
     this.width = width;

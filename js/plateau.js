@@ -44,6 +44,8 @@ function loadImages(imagefiles) {
 // Images
 var images = [];
 images = loadImages(["img/ile.png", "img/montagne.png", "img/marais.png","img/plaine.png","img/foret.png","img/blank.png"]);
+var selected = [];
+selected = loadImages(["img/ile_s.png", "img/montagne_s.png", "img/marais_s.png","img/plaine_s.png","img/foret_s.png"]);
 
 // Array of entities
 var entities = new Array();
@@ -63,7 +65,7 @@ function createEntity(x,y)
     var imageindex = randRange(0,4);
     var xdir = 0;
     var ydir = 1;
-    var entity = new Entity(imageindex,images[imageindex], x, y, scalex, scaley, xdir, ydir, 1200);
+    var entity = new Entity(imageindex,images[imageindex],selected[imageindex], x, y, scalex, scaley, xdir, ydir, 1200);
 
     // Add to the entities array
     return entity;
@@ -75,7 +77,7 @@ function createNullEntity(x,y)
     var imageindex = 5;
     var xdir = 0;
     var ydir = 1;
-    var entity = new Entity(imageindex,images[imageindex], x, y, scalex, scaley, xdir, ydir, 1200);
+    var entity = new Entity(imageindex,images[imageindex],images[imageindex], x, y, scalex, scaley, xdir, ydir, 1200);
 
     // Add to the entities array
     return entity;

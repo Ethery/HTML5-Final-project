@@ -10,8 +10,8 @@ window.onload = function() {
     var fps = 0;
     var i = 0;
     var coord1 = {x:-1,y:-1};
-    var x;
-    var y;
+    var x=-1;
+    var y=-1;
 
 
     // Image loading global variables
@@ -116,15 +116,22 @@ window.onload = function() {
         context.clearRect(level.x,level.y,level.width,level.height);
 
         for (var i=0; i<entities.length; i++) {
+            var st="";
             for (var j=0; j<entities[i].length; j++) {
-
-                // Draw the entity
                 var entity = entities[i][j];
-                context.drawImage(entity.image, entity.x, entity.y, entity.width, entity.height);
-
+                st+=("  "+x+"=="+i+" && "+y+" == "+j);
+                if(x==i && y == j)
+                {
+                    context.drawImage(entity.selected_i,entity.x, entity.y, entity.width, entity.height);
+                }
+                else {
+                    // Draw the entity
+                    context.drawImage(entity.image, entity.x, entity.y, entity.width, entity.height);
+                }
             }
+            console.log(st);
         }
-        if(coord1.x != -1) {
+        /*if(coord1.x != -1) {
 
             var degrade = context.createLinearGradient((x*(level.width / size))+level.x,(y*(level.height / size))+level.y, level.width / (size), level.height / (size)-50);
 
@@ -133,7 +140,7 @@ window.onload = function() {
 
             context.fillStyle = degrade;//On passe notre dégradé au fillStyle();
             context.fillRect((x*(level.width / size))+level.x,(y*(level.height / size))+level.y, level.width / (size), level.height / (size));
-        }
+        }*/
         $("#score").html("Score : "+score);
         $("#multiplicateur").html("Multiplicateur : "+multiplicateur);
     }
