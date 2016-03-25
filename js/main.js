@@ -129,7 +129,7 @@ window.onload = function() {
                     context.drawImage(entity.image, entity.x, entity.y, entity.width, entity.height);
                 }
             }
-            console.log(st);
+            //console.log(st);
         }
         /*if(coord1.x != -1) {
 
