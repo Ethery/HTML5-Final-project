@@ -6,7 +6,7 @@
 var canvas = document.getElementById("viewport");
 var context = canvas.getContext("2d");
 
-
+var gamestarted = false;
 
 // Level properties
 var level = {
