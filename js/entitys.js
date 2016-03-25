@@ -11,9 +11,9 @@ var gamestarted = false;
 // Level properties
 var level = {
     x: 0,
-    y: 15,
+    y: 0,
     width: canvas.width,
-    height: canvas.height-15
+    height: canvas.height
 };
 
 // Define an entity class
