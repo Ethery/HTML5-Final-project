@@ -54,6 +54,8 @@ var size = 6;
 //Score;
 var score = 0;
 
+var multiplicateur = 0;
+
 function createEntity(x,y)
 {
     var scalex = level.width/(size);
@@ -128,7 +130,16 @@ var checkLignes = function(){
         while(entities[i].length != size)
         {
             entities[i].unshift(createNullEntity(i,0));
-            score += 10;
+            multiplicateur = Math.floor(score /1000);
+            console.log(score);
+            console.log(multiplicateur);
+            if(multiplicateur>0)
+            {
+                score += (10*multiplicateur);
+            }
+            else {
+                score += 10;
+            }
         }
     }
 
@@ -163,7 +174,7 @@ var swapCases = function(ia,ja,ib,jb){
     //console.log(entities[ib][jb].index+"="+tmp);
     entities[ib][jb] = tmp;
     //console.log(entities[ib][jb].index+"="+tmp);
-    console.log("entities swaped : "+entities[ia][ja].index+"<->"+entities[ib][jb].index);
+    //console.log("entities swaped : "+entities[ia][ja].index+"<->"+entities[ib][jb].index);
 
     var tmp = entities[ia][ja].x;
     entities[ia][ja].x = entities[ib][jb].x;
@@ -173,7 +184,7 @@ var swapCases = function(ia,ja,ib,jb){
     entities[ia][ja].y = entities[ib][jb].y;
     entities[ib][jb].y = tmp;
 
-    consolePlateau(-1,-1);
+    //consolePlateau(-1,-1);
 };
 
 var consolePlateau = function(x,y){

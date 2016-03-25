@@ -137,8 +137,9 @@ window.onload = function() {
                 }*/
             }
         }
-        console.log(score);
+        //console.log(score);
         $("#score").html("Score : "+score);
+        $("#multiplicateur").html("Multiplicateur : "+multiplicateur);
     }
 
 
