@@ -3,6 +3,8 @@
  */
 window.onload = function() {
 
+
+
     // Variables FPS et animations
     var lastframe = 0;
     var fpstime = 0;
@@ -10,6 +12,7 @@ window.onload = function() {
     var fps = 0;
 
     // Variables de jeu.
+    var lifes = 5;
     var i = 0;
     var coord1 = {x:-1,y:-1};
     var pos = {x:-1,y:-1};
@@ -22,7 +25,15 @@ window.onload = function() {
         canvas.addEventListener("mouseup", onMouseUp);
         canvas.addEventListener("mouseout", onMouseOut);
 
-        loadPlateau();
+        $("#score").html("Score : "+score);
+        $("#multiplicateur").html("Multiplicateur : "+multiplicateur);
+        $("#vies").html("Vies : "+"<img src='img/lifes/life_"+(lifes-i)+".png' width='50' height='50'>");
+
+        loadPlateau(8);
+
+
+
+        $("#reset").css("visibility","hidden");
 
         context.clearRect(0, 0, canvas.width, canvas.height);
         render();
@@ -32,7 +43,8 @@ window.onload = function() {
 
     // Main loop
     function main(tframe) {
-        if (i < 3000) {
+        if (i < lifes) {
+            $("#reset").css("visibility","hidden");
 
             window.requestAnimationFrame(main);
             render();
@@ -40,14 +52,14 @@ window.onload = function() {
 
             if (gamestarted == false) {
                 if (checkLignes(entities) == true) {
-                    refillPlateau();
+                    refillPlateau(entities);
                 }
                 if (update(tframe) == false) {
                 }
             }
             else {
                 if (checkLignes(entities) == true) {
-                    refillPlateau();
+                    refillPlateau(entities);
                 }
                 render();
                 if (update(tframe) == false) {
@@ -55,8 +67,13 @@ window.onload = function() {
                 }
             }
             render();
-            i++;
+
         }
+        else{
+            context.drawImage(gameImages[0],(level.width-gameImages[0].width)/2,(level.width-gameImages[0].width)/2,gameImages[0].width,gameImages[0].height);
+            $("#reset").css("visibility","visible");
+        }
+        $("#vies").html("Vies : "+"<img src='img/lifes/life_"+(lifes-i)+".png' width='50' height='50'>");
     }
 
     // On mets a jour les entitées selon leur vitesse.
@@ -115,13 +132,12 @@ window.onload = function() {
             var st="";
             for (var j=0; j<entities[i].length; j++) {
                 var entity = entities[i][j];
-                st+=("  "+x+"=="+i+" && "+y+" == "+j);
-                if(x==i && y == j)
+                st+=("  "+pos.x+"=="+i+" && "+pos.y+" == "+j);
+                if(pos.x==i && pos.y == j)
                 {
                     context.drawImage(entity.selected_i,entity.x, entity.y, entity.width, entity.height);
                 }
                 else {
-                    // Draw the entity
                     context.drawImage(entity.image, entity.x, entity.y, entity.width, entity.height);
                 }
             }
@@ -136,43 +152,42 @@ window.onload = function() {
     function onMouseMove(e) {}
     function onMouseDown(e) {
 
-        var canSwap = false;
-        gamestarted = true;
-        var clic = getMousePos(canvas,e);
-        if(coord1.x != -1)
-        {
-            clic.x = Math.floor((clic.x-level.x)/(level.width/size));
-            clic.y = Math.floor((clic.y-level.y)/(level.width/size));
-            if(clic.x != x && clic.y == y) {
-                if (x - 1 == clic.x || x + 1 == clic.x) {
-                    canSwap = true;
+        if(i<lifes) {
+            var canSwap = false;
+            gamestarted = true;
+            var clic = getMousePos(canvas, e);
+            if (coord1.x != -1) {
+                clic.x = Math.floor((clic.x - level.x) / (level.width / size));
+                clic.y = Math.floor((clic.y - level.y) / (level.width / size));
+                if (clic.x != pos.x && clic.y == pos.y) {
+                    if (pos.x - 1 == clic.x || pos.x + 1 == clic.x) {
+                        canSwap = true;
+                    }
+                }
+                if (clic.y != pos.y && clic.x == pos.x) {
+                    if (pos.y - 1 == clic.y || pos.y + 1 == clic.y || pos.y == clic.y) {
+                        canSwap = true;
+                    }
                 }
             }
-            if(clic.y != pos.y && clic.x == pos.x)
-            {
-                if (pos.y - 1 == clic.y || pos.y + 1 == clic.y || pos.y == clic.y) {
-                    canSwap = true;
+            if (canSwap == true) {
+                if (swapCases(pos.x, pos.y, clic.x, clic.y) == false) {
+                    i++;
                 }
+                coord1.x = -1;
+                coord1.y = -1;
+                pos.x = -1;
+                pos.y = -1;
+                canswap = false;
             }
-            console.log(clic);
-        }
-        if(canSwap == true)
-        {
-            swapCases(pos.x,pos.y,clic.x,clic.y);
-            coord1.x = -1;
-            coord1.y = -1;
-            pos.x = -1;
-            pos.y = -1;
-            canswap = false;
-        }
-        else{
-            coord1 = getMousePos(canvas,e);
-            pos.x = Math.floor((coord1.x-level.x)/(level.width/size));
-            pos.y = Math.floor((coord1.y-level.y)/(level.width/size));
-            console.log(coord1);
-        }
+            else {
+                coord1 = getMousePos(canvas, e);
+                pos.x = Math.floor((coord1.x - level.x) / (level.width / size));
+                pos.y = Math.floor((coord1.y - level.y) / (level.width / size));
+            }
 
-        render();
+            render();
+        }
     }
 
     function onMouseUp(e) {}
@@ -187,6 +202,17 @@ window.onload = function() {
         };
     }
 
+
     // Call init to start the game
     init();
+
+    $("#reset").click(function() {
+        console.log("clicked");
+        i=0;
+        score = 0;
+        multiplicateur = 0;
+        gamestarted = false;
+        entities = new Array();
+        init();
+    });
 };

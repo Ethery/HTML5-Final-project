@@ -2,7 +2,7 @@
  * Created by Loïc on 11/03/2016.
  */
 
-// Get a random int between low and high, inclusive
+// Nombre aléatoire entre low et high inclus.
 function randRange(low, high) {
     return Math.floor(low + Math.random()*(high-low+1));
 }
@@ -14,13 +14,10 @@ function loadImages(imagefiles) {
     loadtotal = imagefiles.length;
     preloaded = false;
 
-    // Load the images
     var loadedimages = [];
     for (var i=0; i<imagefiles.length; i++) {
-        // Create the image object
         var image = new Image();
 
-        // Add onload event handler
         image.onload = function () {
             loadcount++;
             if (loadcount == loadtotal) {
@@ -28,36 +25,32 @@ function loadImages(imagefiles) {
                 preloaded = true;
             }
         };
-
-        // Set the source url of the image
         image.src = imagefiles[i];
-
-        // Save to the image array
         loadedimages[i] = image;
     }
-
-    // Return an array of images
     return loadedimages;
 }
 
 //-----------GESTION PLATEAU------------------//
 // Images
 var images = [];
-images = loadImages(["img/ile.png", "img/montagne.png", "img/marais.png","img/plaine.png","img/foret.png","img/blank.png"]);
+images = loadImages(["img/ile.png", "img/montagne.png", "img/marais.png","img/plaine.png","img/foret.png","img/lifes/life_0.png"]);
 var selected = [];
 selected = loadImages(["img/ile_s.png", "img/montagne_s.png", "img/marais_s.png","img/plaine_s.png","img/foret_s.png"]);
+var gameImages = [];
+gameImages = loadImages(["img/lose.png","img/win.png"]);
 
-// Array of entities
+// Array des pions.
 var entities = new Array();
 
-//Nombre d'elementspar ligne & colonne dans le plateau.
-var size = 8;
+//Nombre d'elementspar ligne & colonne dans le plateau (initialisé par loadPlateau).
+var size = 0;
 
-//Score;
+// Scores
 var score = 0;
-
 var multiplicateur = 0;
 
+// Renvoie un pion aléatoire positionné a [x,y]
 function createEntity(x,y)
 {
     var scalex = level.width/(size);
@@ -67,9 +60,10 @@ function createEntity(x,y)
     var ydir = 1;
     var entity = new Entity(imageindex,images[imageindex],selected[imageindex], x, y, scalex, scaley, xdir, ydir, 1200);
 
-    // Add to the entities array
     return entity;
 }
+
+// Renvoie un pion null positionné a [x,y] (sert aux cases vides)
 function createNullEntity(x,y)
 {
     var scalex = level.width/(size);
@@ -79,19 +73,21 @@ function createNullEntity(x,y)
     var ydir = 1;
     var entity = new Entity(imageindex,images[imageindex],images[imageindex], x, y, scalex, scaley, xdir, ydir, 1200);
 
-    // Add to the entities array
     return entity;
 }
 
-var loadPlateau = function(){
-    for (var i = 0; i < size; i++) {
+// Initialisation du plateau avec des pions aléatoires.
+var loadPlateau = function(t){
+    size = t;
+    for (var i = 0; i < t; i++) {
         entities.push(new Array());
-        for (var j = 0; j < size; j++) {
+        for (var j = 0; j < t; j++) {
             this.entities[i][j] = createEntity(i,j);
         }
     }
 };
 
+// Sert a verifier si une ligne ou une colonne de taille 'nb' est dans le tableau 'tab'. (Si oui : supprime les piosn concernés)
 var checkSize = function(tab,nb){
     var bool = false;
     var nbCheck = nb;
@@ -110,7 +106,7 @@ var checkSize = function(tab,nb){
                 for (var l = 0; l < nbCheck; l++) {
                     tab[i + l].splice(j, 1);
                 }
-                bool = same;
+                bool = true;
             }
         }
     }
@@ -127,7 +123,7 @@ var checkSize = function(tab,nb){
             }
             if(same == true) {
                 tab[i].splice(j, nbCheck+1);
-                bool = same;
+                bool = true;
             }
         }
     }
@@ -136,12 +132,12 @@ var checkSize = function(tab,nb){
 
 
 //Decompte du score et du multiplicateur.(remplissage du tableau par les valeures blank des jetons.
-var fillNulls = function()
+var fillNulls = function(filled)
 {
-    for (var i=0; i<entities.length; i++) {
-        while(entities[i].length != size)
+    for (var i=0; i<filled.length; i++) {
+        while(filled[i].length != size)
         {
-            entities[i].unshift(createNullEntity(i,0));
+            filled[i].unshift(createNullEntity(i,0));
             multiplicateur = Math.floor(score /1000);
             if(gamestarted == true) {
                 if (multiplicateur > 0) {
@@ -155,22 +151,18 @@ var fillNulls = function()
     }
 };
 
-var checkLignes = function(tab){
+var checkLignes = function(checked){
     var deleted = false;//Sert a verifier si un objet a étè supprimé lors de la verification de la grille.
 
-
     //Verification des Lignes/colonnes de 5 à 3. (Les suites de 5 sont prioritaires).
-
     for(var i = 5; i>= 3 ; i--)
     {
-        if(checkSize(tab,i))
+        if(checkSize(checked,i)==true)
         {
             deleted = true;
-            fillNulls();
+            fillNulls(checked);
         }
     }
-
-
 
     /*Ancien systeme de verification des Lignes/colonnes de 3 (pas viable pour les verifications plus élevées mais fonctionnel).
     for (var i=0; i<entities.length-2; i++) {
@@ -196,17 +188,16 @@ var checkLignes = function(tab){
         }
     }
     */
-
     return deleted;
 };
 
-var refillPlateau=function()
+var refillPlateau=function(filled)
 {
-    for (var i=0; i<entities.length; i++) {
-        for (var j=0; j<entities[i].length; j++) {
-            if(entities[i][j].index == 5)
+    for (var i=0; i<filled.length; i++) {
+        for (var j=0; j<filled[i].length; j++) {
+            if(filled[i][j].index == 5)
             {
-                entities[i][j] = createEntity(i,(j-size+1)*2);
+                filled[i][j] = createEntity(i,(j-size+1)*2);
             }
         }
     }
@@ -215,50 +206,57 @@ var refillPlateau=function()
 var swapCases = function(ia,ja,ib,jb){
     //consolePlateau(-1,-1);
 
-    /*var tmptab = entities.slice();
+    var can = false;
+    var tmptab = JSON.parse(JSON.stringify(entities));
+
     var tmp = tmptab[ia][ja];
     tmptab[ia][ja] = tmptab[ib][jb];
     tmptab[ib][jb] = tmp;
 
-    var tmp = tmptab[ia][ja].x;
+    tmp = tmptab[ia][ja].x;
     tmptab[ia][ja].x = tmptab[ib][jb].x;
     tmptab[ib][jb].x = tmp;
 
-    var tmp = tmptab[ia][ja].y;
+    tmp = tmptab[ia][ja].y;
     tmptab[ia][ja].y = tmptab[ib][jb].y;
     tmptab[ib][jb].y = tmp;
 
     if(checkLignes(tmptab)==true)
-    {*/
-        var tmp = entities[ia][ja];
+    {
+        tmp = entities[ia][ja];
         entities[ia][ja] = entities[ib][jb];
         entities[ib][jb] = tmp;
 
-        var tmp = entities[ia][ja].x;
+        tmp = entities[ia][ja].x;
         entities[ia][ja].x = entities[ib][jb].x;
         entities[ib][jb].x = tmp;
 
-        var tmp = entities[ia][ja].y;
+        tmp = entities[ia][ja].y;
         entities[ia][ja].y = entities[ib][jb].y;
         entities[ib][jb].y = tmp;
+        can = true;
+    }
 
-  //  }
-
+    return can;
     //consolePlateau(-1,-1);
 };
 
-var consolePlateau = function(x,y){
+var consolePlateau = function(aff,x,y){
     var str;
-    for (var i=0; i<entities.length; i++) {
-        str = "";
-        for (var j=0; j<entities[i].length; j++) {
-            if(x == i && y == j)
-            {
-                str += "|" + entities[i][j].index + "|;";
-            }
-            else
-            {
-                str += entities[i][j].index+";";
+    console.log("-----------------------------------");
+    console.log(aff);
+
+
+    for (var i=0; i<aff.length; i++) {
+        str = aff[i].length+":";
+        for (var j=0; j<aff[i].length; j++) {
+            if(aff[i][j]!=null) {
+                if (x == i && y == j) {
+                    str += "|" + aff[i][j].index + "|;";
+                }
+                else {
+                    str += aff[i][j].index + ";";
+                }
             }
         }
         console.log (str);
