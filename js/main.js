@@ -12,8 +12,7 @@ window.onload = function() {
     // Variables de jeu.
     var i = 0;
     var coord1 = {x:-1,y:-1};
-    var x=-1;
-    var y=-1;
+    var pos = {x:-1,y:-1};
 
     // Initialisation du jeu
     function init() {
@@ -149,27 +148,27 @@ window.onload = function() {
                     canSwap = true;
                 }
             }
-            if(clic.y != y && clic.x == x)
+            if(clic.y != pos.y && clic.x == pos.x)
             {
-                if (y - 1 == clic.y || y + 1 == clic.y || y == clic.y) {
+                if (pos.y - 1 == clic.y || pos.y + 1 == clic.y || pos.y == clic.y) {
                     canSwap = true;
                 }
             }
-            console.log(coord1);
+            console.log(clic);
         }
         if(canSwap == true)
         {
-            swapCases(x,y,clic.x,clic.y);
+            swapCases(pos.x,pos.y,clic.x,clic.y);
             coord1.x = -1;
             coord1.y = -1;
-            x = -1;
-            y = -1;
+            pos.x = -1;
+            pos.y = -1;
             canswap = false;
         }
         else{
             coord1 = getMousePos(canvas,e);
-            x = Math.floor((coord1.x-level.x)/(level.width/size));
-            y = Math.floor((coord1.y-level.y)/(level.width/size));
+            pos.x = Math.floor((coord1.x-level.x)/(level.width/size));
+            pos.y = Math.floor((coord1.y-level.y)/(level.width/size));
             console.log(coord1);
         }
 
