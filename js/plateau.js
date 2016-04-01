@@ -50,8 +50,8 @@ selected = loadImages(["img/ile_s.png", "img/montagne_s.png", "img/marais_s.png"
 // Array of entities
 var entities = new Array();
 
-//Taille du quadrillage
-var size = 6;
+//Nombre d'elementspar ligne & colonne dans le plateau.
+var size = 8;
 
 //Score;
 var score = 0;
@@ -92,42 +92,52 @@ var loadPlateau = function(){
     }
 };
 
-var aVirerX = [];
-var aVirerY = [];
+var checkSize = function(tab,nb){
+    var bool = false;
+    var nbCheck = nb;
 
-var checkLignes = function(){
-    var deleted = false;
-    for (var i=0; i<entities.length-2; i++) {
-        for (var j=0; j<entities[i].length; j++) {
-            if(entities[i][j].index == entities[i+1][j].index && entities[i][j].index == entities[i+2][j].index && entities[i][j].index != 5)
-            {
-                aVirerX.push(i);
-                aVirerX.push(i+1);
-                aVirerX.push(i+2);
-                aVirerY.push(j);
-                entities[i].splice(j, 1);
-                entities[i+1].splice(j, 1);
-                entities[i+2].splice(j, 1);
-                deleted = true;
-                break;
+    for (var i=0; i<tab.length-nbCheck+1; i++) {
+        for (var j=0; j<tab[i].length; j++) {
+            var index = tab[i][j].index;
+            var same = true;
+            for (var k = 0; k < nbCheck; k++) {
+                if (index != tab[i + k][j].index) {
+                    same = false;
+                    break;
+                }
+            }
+            if (same == true) {
+                for (var l = 0; l < nbCheck; l++) {
+                    tab[i + l].splice(j, 1);
+                }
+                bool = same;
             }
         }
     }
 
-    for (var i=0; i<entities.length; i++) {
-        for (var j=0; j<entities[i].length-2; j++) {
-            if (entities[i][j].index == entities[i][j + 1].index && entities[i][j].index == entities[i][j + 2].index && entities[i][j].index != 5) {
-                entities[i].splice(j, 3);
-                aVirerX.push(i);
-                aVirerY.push(j);
-                aVirerY.push(j+1);
-                aVirerY.push(j+2);
-                deleted = true;
-                break;
+    for (var i=0; i<tab.length; i++) {
+        for (var j=0; j<tab[i].length-nbCheck+1; j++) {
+            var index = tab[i][j].index;
+            var same = true;
+            for(var k = 0;k<nbCheck;k++){
+                if(index != tab[i][j+k].index){
+                    same = false;
+                    break;
+                }
+            }
+            if(same == true) {
+                tab[i].splice(j, nbCheck+1);
+                bool = same;
             }
         }
     }
+    return bool;
+};
 
+
+//Decompte du score et du multiplicateur.(remplissage du tableau par les valeures blank des jetons.
+var fillNulls = function()
+{
     for (var i=0; i<entities.length; i++) {
         while(entities[i].length != size)
         {
@@ -143,6 +153,49 @@ var checkLignes = function(){
             }
         }
     }
+};
+
+var checkLignes = function(tab){
+    var deleted = false;//Sert a verifier si un objet a étè supprimé lors de la verification de la grille.
+
+
+    //Verification des Lignes/colonnes de 5 à 3. (Les suites de 5 sont prioritaires).
+
+    for(var i = 5; i>= 3 ; i--)
+    {
+        if(checkSize(tab,i))
+        {
+            deleted = true;
+            fillNulls();
+        }
+    }
+
+
+
+    /*Ancien systeme de verification des Lignes/colonnes de 3 (pas viable pour les verifications plus élevées mais fonctionnel).
+    for (var i=0; i<entities.length-2; i++) {
+        for (var j=0; j<entities[i].length; j++) {
+            if(entities[i][j].index == entities[i+1][j].index && entities[i][j].index == entities[i+2][j].index && entities[i][j].index != 5)
+            {
+                entities[i].splice(j, 1);
+                entities[i+1].splice(j, 1);
+                entities[i+2].splice(j, 1);
+                deleted = true;
+                break;
+            }
+        }
+    }
+
+    for (var i=0; i<entities.length; i++) {
+        for (var j=0; j<entities[i].length-2; j++) {
+            if (entities[i][j].index == entities[i][j + 1].index && entities[i][j].index == entities[i][j + 2].index && entities[i][j].index != 5) {
+                entities[i].splice(j, 3);
+                deleted = true;
+                break;
+            }
+        }
+    }
+    */
 
     return deleted;
 };
@@ -161,17 +214,35 @@ var refillPlateau=function()
 
 var swapCases = function(ia,ja,ib,jb){
     //consolePlateau(-1,-1);
-    var tmp = entities[ia][ja];
-    entities[ia][ja] = entities[ib][jb];
-    entities[ib][jb] = tmp;
 
-    var tmp = entities[ia][ja].x;
-    entities[ia][ja].x = entities[ib][jb].x;
-    entities[ib][jb].x = tmp;
+    /*var tmptab = entities.slice();
+    var tmp = tmptab[ia][ja];
+    tmptab[ia][ja] = tmptab[ib][jb];
+    tmptab[ib][jb] = tmp;
 
-    var tmp = entities[ia][ja].y;
-    entities[ia][ja].y = entities[ib][jb].y;
-    entities[ib][jb].y = tmp;
+    var tmp = tmptab[ia][ja].x;
+    tmptab[ia][ja].x = tmptab[ib][jb].x;
+    tmptab[ib][jb].x = tmp;
+
+    var tmp = tmptab[ia][ja].y;
+    tmptab[ia][ja].y = tmptab[ib][jb].y;
+    tmptab[ib][jb].y = tmp;
+
+    if(checkLignes(tmptab)==true)
+    {*/
+        var tmp = entities[ia][ja];
+        entities[ia][ja] = entities[ib][jb];
+        entities[ib][jb] = tmp;
+
+        var tmp = entities[ia][ja].x;
+        entities[ia][ja].x = entities[ib][jb].x;
+        entities[ib][jb].x = tmp;
+
+        var tmp = entities[ia][ja].y;
+        entities[ia][ja].y = entities[ib][jb].y;
+        entities[ib][jb].y = tmp;
+
+  //  }
 
     //consolePlateau(-1,-1);
 };
