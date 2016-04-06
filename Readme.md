@@ -1,8 +1,7 @@
+
 Ce jeu est un Bejeweled :
 
-
-Vous devez essayer d'aligner 3 couleurs ou plus identiques. Une fois ceci fait, ces couleurs disparaissent,ceux d'au-dessus
-redescendent et de nouveaux apparaissent en haut.
+Vous devez essayer d'aligner 3 couleurs ou plus identiques. Une fois ceci fait, ces couleurs disparaissent,ceux d'au-dessus redescendent et de nouveaux apparaissent en haut.
 
 Le but est d'aligner le plus de fois 3 ou plus couleurs identiques, cela vous donne des points.
 
@@ -12,7 +11,4 @@ Pour gagner il vous faut atteindre 200 points.
 
 Si on aligne plusieurs fois d'affilée la même couleur, on a un multiplicateur qui apparait et qui augmente si on continue d'aligner la même couleur plusieurs fois, ce qui permet de faire plus de points.
 
-
 L'adresse de notre Github est : github.com/Ethery/HTML5-Final-project
-
-L'adresse de notre site est : http://ethery.ddns.net/ethery/projets/cours/HTML5/Projet/index.html

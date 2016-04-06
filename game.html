@@ -14,6 +14,9 @@
 <div class="container">
     <header class="clearfix">
         <h1>Magiclewed</h1>
+        <nav>
+            <a href="index.html" class="icon-arrow-left" data-info="Page de présentation">Page de présentation</a>
+        </nav>
     </header>
     <div class="main">
         <ul id="cbp-bislideshow" class="cbp-bislideshow">
@@ -27,30 +30,13 @@
             <li><img src="backgrounds/b8.jpg" alt="image06"/></li>
         </ul>
 
-        <div id="prez">
-            <p>
-                Ce jeu est un Bejeweled :
-            </p>
-            <p>
-                Vous devez essayer d'aligner 3 couleurs ou plus identiques. Une fois ceci fait, ces couleurs disparaissent,ceux d'au-dessus redescendent et de nouveaux apparaissent en haut.
-            </p>
-            <p>
-                Le but est d'aligner le plus de fois 3 ou plus couleurs identiques, cela vous donne des points.
-            </p>
-            <p>
-                Si vous faites 5 mauvais déplacements (c'est-à-dire des déplacements qui ne permettent pas d'aligner 3 ou plus couleurs), la partie se finie et vous avez perdu.
-            </p>
-            <p>
-                Pour gagner il vous faut atteindre 200 points.
-            </p>
-            <p>
-                Si on aligne plusieurs fois d'affilée la même couleur, on a un multiplicateur qui apparait et qui augmente si on continue d'aligner la même couleur plusieurs fois, ce qui permet de faire plus de points.
-            </p>
-            <p>
-                L'adresse de notre Github est : <a href="http://www.github.com/Ethery/HTML5-Final-project">http://www.github.com/Ethery/HTML5-Final-project</a>
-            </p>
+        <div id="game">
+            <h1 id="jeu">Bejeweled like TP HTML</h1>
+            <canvas id="viewport" height="500" width="500" ></canvas>
 
-            <a id="playb" href="game.html"><img src="img/play_button.png" alt="play"/></a>
+            <div id="score">Score: 0</div>
+            <div id="vies"><img src='img/lifes/life_5.png' width='50' height='50'></div>
+            <button id="reset">Réessayer</button>
         </div>
         <div id="cbp-bicontrols" class="cbp-bicontrols">
             <span class="cbp-biprev"></span>
@@ -63,6 +49,9 @@
 <!-- imagesLoaded jQuery plugin by @desandro : https://github.com/desandro/imagesloaded -->
 <script src="js/background/jquery.imagesloaded.min.js"></script>
 <script src="js/background/cbpBGSlideshow.js"></script>
+<script src="js/entitys.js"></script>
+<script src="js/plateau.js"></script>
+<script src="js/main.js"></script>
 <script>
     $(function() {
         cbpBGSlideshow.init();
