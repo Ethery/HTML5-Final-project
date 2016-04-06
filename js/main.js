@@ -17,6 +17,8 @@ window.onload = function() {
     var i = 0;
     var coord1 = {x:-1,y:-1};
     var pos = {x:-1,y:-1};
+    var tot = 0;
+    var scoreToWin = 200;
 
     function runIt(div) {
         div.animate({ opacity: '-=1.0' }, 1000, function(){
@@ -61,7 +63,12 @@ window.onload = function() {
 
     // Main loop
     function main(tframe) {
-        if (i < lifes && score < 200000) {
+
+        tot = 0;
+        for (var j = 0; j < 5; j++) {
+            tot += scores[j];
+        }
+        if (i < lifes && tot < scoreToWin) {
             $("#reset").css("visibility","hidden");
 
             window.requestAnimationFrame(main);
@@ -92,7 +99,7 @@ window.onload = function() {
             context.drawImage(gameImages[0],(level.width-gameImages[0].width)/2,(level.width-gameImages[0].width)/2,gameImages[0].width,gameImages[0].height);
             $("#reset").css("visibility","visible");
         }
-        else if (score >= 200000){
+        else if (tot >= scoreToWin){
 
             context.drawImage(gameImages[1],(level.width-gameImages[1].width)/2,(level.width-gameImages[1].width)/2,gameImages[1].width,gameImages[1].height);
             $("#reset").css("visibility","visible");
@@ -111,19 +118,19 @@ window.onload = function() {
         var tmp = false;
         var moved = false;
         // Update entities
-        for (var i = 0; i < entities.length; i++) {
+        for (var k = 0; k < entities.length; k++) {
             var str="";
-            for (var j = 0; j < entities[i].length; j++) {
-                if (entities[i][j].y < j*(level.height/size)+level.y) {
-                    if((dt * entities[i][j].speed * entities[i][j].ydir) + entities[i][j].y < j*(level.height/size)+level.y) {
-                        entities[i][j].y += dt * entities[i][j].speed * entities[i][j].ydir;
+            for (var j = 0; j < entities[k].length; j++) {
+                if (entities[k][j].y < j*(level.height/size)+level.y) {
+                    if((dt * entities[k][j].speed * entities[k][j].ydir) + entities[k][j].y < j*(level.height/size)+level.y) {
+                        entities[k][j].y += dt * entities[k][j].speed * entities[k][j].ydir;
                     }
                     else{
-                        entities[i][j].y = j*(level.height/size)+level.y;
+                        entities[k][j].y = j*(level.height/size)+level.y;
                     }
                     tmp = true;
                     moved = true;
-                    str += entities[i][j].y+  "<" + (j*(level.height/size)+level.y)+":";
+                    str += entities[k][j].y+  "<" + (j*(level.height/size)+level.y)+":";
                 }
                 tmp = false;
             }
@@ -180,8 +187,11 @@ window.onload = function() {
     // Mouse event handlers
     function onMouseMove(e) {}
     function onMouseDown(e) {
-
-        if(i<lifes) {
+        tot = 0;
+        for (var j = 0; j < 5; j++) {
+            tot += scores[j];
+        }
+        if(i<lifes && tot < scoreToWin) {
             var canSwap = false;
             gamestarted = true;
             var clic = getMousePos(canvas, e);

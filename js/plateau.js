@@ -119,42 +119,41 @@ var checkSize = function(tab,nb){
         }
     }
 
-    if(bool == false) {
-        for (var i = 0; i < tab.length; i++) {
-            for (var j = 0; j < tab[i].length - nbCheck + 1; j++) {
-                var index = tab[i][j].index;
-                var same = true;
-                for (var k = 0; k < nbCheck; k++) {
-                    if (index != tab[i][j + k].index) {
-                        same = false;
-                        break;
-                    }
-                }
-                if (same == true) {
-                    tab[i].splice(j, nbCheck + 1);
-                    bool = true;
-                    couleur = index;
+    for (var i = 0; i < tab.length; i++) {
+        for (var j = 0; j < tab[i].length - nbCheck + 1; j++) {
+            var index = tab[i][j].index;
+            var same = true;
+            for (var k = 0; k < nbCheck; k++) {
+                if (index != tab[i][j + k].index) {
+                    same = false;
                     break;
                 }
             }
-            if(bool == true)
-            {
+            if (same == true) {
+                tab[i].splice(j, nbCheck + 1);
+                bool = true;
+                couleur = index;
                 break;
             }
+        }
+        if(bool == true)
+        {
+            break;
         }
     }
 
     if(bool == true) {
-        multiplicateur = nbCheck;
+        //multiplicateur = nbCheck;
         for (var i = 0; i < tab.length; i++) {
             while (tab[i].length != size) {
                 tab[i].unshift(createNullEntity(i, 0));
                 if (gamestarted == true) {
-                    scores[couleur] += (multiplicateur * 1);
+                    scores[couleur] += 1;
                 }
             }
         }
     }
+
 
     return bool;
 };
