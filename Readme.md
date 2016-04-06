@@ -14,3 +14,5 @@ Si on aligne plusieurs fois d'affilée la même couleur, on a un multiplicateur 
 
 
 L'adresse de notre Github est : github.com/Ethery/HTML5-Final-project
+
+L'adresse de notre site est : http://ethery.ddns.net/ethery/projets/cours/HTML5/Projet/index.html
