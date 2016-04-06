@@ -35,12 +35,20 @@ window.onload = function() {
         canvas.addEventListener("mouseup", onMouseUp);
         canvas.addEventListener("mouseout", onMouseOut);
 
-        $("#score").html("Score : "+score);
-        $("#multiplicateur").html("Multiplicateur : "+multiplicateur);
+        var txt = "Scores : ";
+        for (var  j=0; j<5; j++) {
+            txt += "<img src='"+dirImg[j] +"' width='20' height='20'> "+ scores[j];
+        }
+
+        $("#score").html(txt);
+
         $("#vies").html("<img src='img/lifes/life_"+(lifes-i)+".png' width='50' height='50'>");
 
         loadPlateau(8);
 
+        for (var j = 0; j < 5; j++) {
+            scores.push(0);
+        }
 
 
         $("#reset").css("visibility","hidden");
@@ -53,7 +61,7 @@ window.onload = function() {
 
     // Main loop
     function main(tframe) {
-        if (i < lifes && score < 60000) {
+        if (i < lifes && score < 200000) {
             $("#reset").css("visibility","hidden");
 
             window.requestAnimationFrame(main);
@@ -84,7 +92,7 @@ window.onload = function() {
             context.drawImage(gameImages[0],(level.width-gameImages[0].width)/2,(level.width-gameImages[0].width)/2,gameImages[0].width,gameImages[0].height);
             $("#reset").css("visibility","visible");
         }
-        else if (score >= 60000){
+        else if (score >= 200000){
 
             context.drawImage(gameImages[1],(level.width-gameImages[1].width)/2,(level.width-gameImages[1].width)/2,gameImages[1].width,gameImages[1].height);
             $("#reset").css("visibility","visible");
@@ -143,12 +151,12 @@ window.onload = function() {
     function render() {
         context.clearRect(level.x,level.y,level.width,level.height);
 
-        for (var i=0; i<entities.length; i++) {
+        for (var k=0; k<entities.length; k++) {
             var st="";
-            for (var j=0; j<entities[i].length; j++) {
-                var entity = entities[i][j];
-                st+=("  "+pos.x+"=="+i+" && "+pos.y+" == "+j);
-                if(pos.x==i && pos.y == j)
+            for (var j=0; j<entities[k].length; j++) {
+                var entity = entities[k][j];
+                st+=("  "+pos.x+"=="+k+" && "+pos.y+" == "+j);
+                if(pos.x==k && pos.y == j)
                 {
                     context.drawImage(entity.selected_i,entity.x, entity.y, entity.width, entity.height);
                 }
@@ -157,8 +165,14 @@ window.onload = function() {
                 }
             }
         }
-        $("#score").html("Score : "+score);
-        $("#multiplicateur").html("Multiplicateur : "+multiplicateur);
+
+        var txt = "Scores : ";
+        for (var  j=0; j<5; j++) {
+            txt += "<img src='"+dirImg[j] +"' width='20' height='20'> "+ scores[j];
+        }
+
+        $("#score").html(txt);
+
     }
 
 

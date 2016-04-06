@@ -33,8 +33,9 @@ function loadImages(imagefiles) {
 
 //-----------GESTION PLATEAU------------------//
 // Images
+var dirImg = ["img/ile.png", "img/montagne.png", "img/marais.png","img/plaine.png","img/foret.png","img/lifes/life_0.png"];
 var images = [];
-images = loadImages(["img/ile.png", "img/montagne.png", "img/marais.png","img/plaine.png","img/foret.png","img/lifes/life_0.png"]);
+images = loadImages(dirImg);
 var selected = [];
 selected = loadImages(["img/ile_s.png", "img/montagne_s.png", "img/marais_s.png","img/plaine_s.png","img/foret_s.png"]);
 var gameImages = [];
@@ -47,7 +48,7 @@ var entities = new Array();
 var size = 0;
 
 // Scores
-var score = 0;
+var scores = new Array();
 var multiplicateur = 0;
 
 // Renvoie un pion aléatoire positionné a [x,y]
@@ -91,6 +92,7 @@ var loadPlateau = function(t){
 var checkSize = function(tab,nb){
     var bool = false;
     var nbCheck = nb;
+    var couleur = -1;
 
     for (var i=0; i<tab.length-nbCheck+1; i++) {
         for (var j=0; j<tab[i].length; j++) {
@@ -107,39 +109,65 @@ var checkSize = function(tab,nb){
                     tab[i + l].splice(j, 1);
                 }
                 bool = true;
+                couleur = index;
+                break;
             }
+        }
+        if(bool == true)
+        {
+            break;
         }
     }
 
-    for (var i=0; i<tab.length; i++) {
-        for (var j=0; j<tab[i].length-nbCheck+1; j++) {
-            var index = tab[i][j].index;
-            var same = true;
-            for(var k = 0;k<nbCheck;k++){
-                if(index != tab[i][j+k].index){
-                    same = false;
+    if(bool == false) {
+        for (var i = 0; i < tab.length; i++) {
+            for (var j = 0; j < tab[i].length - nbCheck + 1; j++) {
+                var index = tab[i][j].index;
+                var same = true;
+                for (var k = 0; k < nbCheck; k++) {
+                    if (index != tab[i][j + k].index) {
+                        same = false;
+                        break;
+                    }
+                }
+                if (same == true) {
+                    tab[i].splice(j, nbCheck + 1);
+                    bool = true;
+                    couleur = index;
                     break;
                 }
             }
-            if(same == true) {
-                tab[i].splice(j, nbCheck+1);
-                bool = true;
+            if(bool == true)
+            {
+                break;
             }
         }
     }
+
+    if(bool == true) {
+        multiplicateur = nbCheck;
+        for (var i = 0; i < tab.length; i++) {
+            while (tab[i].length != size) {
+                tab[i].unshift(createNullEntity(i, 0));
+                if (gamestarted == true) {
+                    scores[couleur] += (multiplicateur * 1);
+                }
+            }
+        }
+    }
+
     return bool;
 };
 
-
+/*
 //Decompte du score et du multiplicateur.(remplissage du tableau par les valeures blank des jetons.
 var fillNulls = function(filled)
 {
     for (var i=0; i<filled.length; i++) {
-        while(filled[i].length != size)
-        {
-            filled[i].unshift(createNullEntity(i,0));
-            multiplicateur = Math.floor(score /1000);
-            if(gamestarted == true) {
+        while (filled[i].length != size) {
+             tab[i].unshift(createNullEntity(i, 0));
+            if (gamestarted == true) {
+                 multiplicateur = Math.floor(score / 1000);
                 if (multiplicateur > 0) {
                     score += (10 * multiplicateur);
                 }
@@ -149,7 +177,7 @@ var fillNulls = function(filled)
             }
         }
     }
-};
+};*/
 
 var checkLignes = function(checked){
     var deleted = false;//Sert a verifier si un objet a étè supprimé lors de la verification de la grille.
@@ -160,7 +188,7 @@ var checkLignes = function(checked){
         if(checkSize(checked,i)==true)
         {
             deleted = true;
-            fillNulls(checked);
+            //fillNulls(checked);
         }
     }
 
