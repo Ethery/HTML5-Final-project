@@ -1,9 +1,10 @@
 /**
  * Created by Loïc on 11/03/2016.
  */
+
+
+
 window.onload = function() {
-
-
 
     // Variables FPS et animations
     var lastframe = 0;
@@ -17,6 +18,15 @@ window.onload = function() {
     var coord1 = {x:-1,y:-1};
     var pos = {x:-1,y:-1};
 
+    function runIt(div) {
+        div.animate({ opacity: '-=1.0' }, 1000, function(){
+            div.html("<img src='img/lifes/life_"+(lifes-i)+".png' width='50' height='50'>");
+        });
+        div.animate({
+            opacity: '+=1.0'
+        }, 1000);
+    }
+
     // Initialisation du jeu
     function init() {
         // Ajout de la lecture des evenements.
@@ -27,7 +37,7 @@ window.onload = function() {
 
         $("#score").html("Score : "+score);
         $("#multiplicateur").html("Multiplicateur : "+multiplicateur);
-        $("#vies").html("Vies : "+"<img src='img/lifes/life_"+(lifes-i)+".png' width='50' height='50'>");
+        $("#vies").html("<img src='img/lifes/life_"+(lifes-i)+".png' width='50' height='50'>");
 
         loadPlateau(8);
 
@@ -43,7 +53,7 @@ window.onload = function() {
 
     // Main loop
     function main(tframe) {
-        if (i < lifes) {
+        if (i < lifes && score < 60000) {
             $("#reset").css("visibility","hidden");
 
             window.requestAnimationFrame(main);
@@ -69,11 +79,16 @@ window.onload = function() {
             render();
 
         }
-        else{
+        else if (i>= lifes){
+
             context.drawImage(gameImages[0],(level.width-gameImages[0].width)/2,(level.width-gameImages[0].width)/2,gameImages[0].width,gameImages[0].height);
             $("#reset").css("visibility","visible");
         }
-        $("#vies").html("Vies : "+"<img src='img/lifes/life_"+(lifes-i)+".png' width='50' height='50'>");
+        else if (score >= 60000){
+
+            context.drawImage(gameImages[1],(level.width-gameImages[1].width)/2,(level.width-gameImages[1].width)/2,gameImages[1].width,gameImages[1].height);
+            $("#reset").css("visibility","visible");
+        }
     }
 
     // On mets a jour les entitées selon leur vitesse.
@@ -173,12 +188,12 @@ window.onload = function() {
             if (canSwap == true) {
                 if (swapCases(pos.x, pos.y, clic.x, clic.y) == false) {
                     i++;
+                    runIt($("#vies"));
                 }
                 coord1.x = -1;
                 coord1.y = -1;
                 pos.x = -1;
                 pos.y = -1;
-                canswap = false;
             }
             else {
                 coord1 = getMousePos(canvas, e);
