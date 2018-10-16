@@ -10,5 +10,3 @@ Si vous faites 5 mauvais déplacements (c'est-à-dire des déplacements qui ne p
 Pour gagner il vous faut atteindre 200 points.
 
 Si on aligne plusieurs fois d'affilée la même couleur, on a un multiplicateur qui apparait et qui augmente si on continue d'aligner la même couleur plusieurs fois, ce qui permet de faire plus de points.
-
-L'adresse de notre Github est : github.com/Ethery/HTML5-Final-project
